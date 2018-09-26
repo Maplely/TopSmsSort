@@ -22,6 +22,10 @@ class DownloadSrevice : Service() {
         return null
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        log("dadad")
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("服务开始")

@@ -30,7 +30,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun beginService() {
-        Intent(this@SplashActivity, DownloadSrevice::class.java)
+        val intent = Intent(this@SplashActivity, DownloadSrevice::class.java)
         startService(intent)
     }
 
