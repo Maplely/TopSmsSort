@@ -1,4 +1,4 @@
-package com.top.topsmssort.ui
+package com.top.topsmssort.activity
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -57,6 +57,7 @@ class SplashActivity : AppCompatActivity() {
                 //动画结束开始跳转
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                 overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out)
+                finish()
             }
 
             override fun onAnimationStart(animation: Animation?) {

@@ -1,6 +1,7 @@
 package com.top.topsmssort.utils
 
 import android.app.Service
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
@@ -20,6 +21,14 @@ fun AppCompatActivity.log(content: String) {
     }
 }
 fun Service.log(content: String){
+    if(debuggable){
+        Log.e("TTT",content)
+    }
+}
+fun Fragment.toast(content: String){
+    Toast.makeText(this.activity, content, Toast.LENGTH_SHORT).show()
+}
+fun Fragment.log(content: String){
     if(debuggable){
         Log.e("TTT",content)
     }
