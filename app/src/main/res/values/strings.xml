@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TopSmsSort</string>
+    <string name="sms_activity_title">短信整理工具</string>
+    <string name="drawer_header_title">hello world</string>
+    <string name="drawer_item">快递短信整理</string>
+    <string name="drawer_about">about me</string>
 </resources>

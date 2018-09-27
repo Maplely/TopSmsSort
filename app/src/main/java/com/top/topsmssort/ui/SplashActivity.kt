@@ -21,6 +21,7 @@ import java.io.File
  *
  */
 class SplashActivity : AppCompatActivity() {
+    val permission_request = 0x10
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -76,7 +77,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }
         if (no_list.size > 0) {
-            ActivityCompat.requestPermissions(this, no_list.toTypedArray(), MainActivity.permission_request)
+            ActivityCompat.requestPermissions(this, no_list.toTypedArray(), permission_request)
         } else {
             setAnim()
             beginService()
@@ -89,7 +90,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         var flag = true;
-        if (requestCode == MainActivity.permission_request) {
+        if (requestCode == permission_request) {
             grantResults.forEach {
                 if (it != PackageManager.PERMISSION_GRANTED) {
                     //权限没有通过

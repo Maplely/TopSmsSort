@@ -2,20 +2,43 @@ package com.top.topsmssort.ui
 
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import com.top.topsmssort.R
 import com.top.topsmssort.utils.TimeUtil
 import com.top.topsmssort.utils.log
+import com.top.topsmssort.utils.toast
+import kotlinx.android.synthetic.main.activity_m.*
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        @JvmStatic
-        val permission_request = 0x10
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_m)
+        drawer_navigation.setNavigationItemSelectedListener(object:NavigationView.OnNavigationItemSelectedListener{
+            override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+                val itemId = p0.itemId
+                when(itemId){
+                    R.id.sms->{
+                        //navigation菜单
+                        toast("sms")
+                        sms_drawer.closeDrawers()
+                    }
+                    R.id.about->{
+                        toast("about")
+                        sms_drawer.closeDrawers()
+                    }
+                }
+                return true
+            }
+
+        })
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.drawer_menu,menu)
+        return true
     }
 
     /**
