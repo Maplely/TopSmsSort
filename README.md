@@ -2,5 +2,5 @@
 + kotlin
 + rxjava
 + retrofit
-+ 动态下载
++ IO
 ....
