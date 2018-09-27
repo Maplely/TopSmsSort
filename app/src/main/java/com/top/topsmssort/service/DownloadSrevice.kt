@@ -6,6 +6,7 @@ import android.os.IBinder
 import com.top.topsmssort.net.NetFactory
 import com.top.topsmssort.utils.DownloadUtil
 import com.top.topsmssort.utils.RxUtil
+import com.top.topsmssort.utils.SpUtil
 import com.top.topsmssort.utils.log
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -17,14 +18,8 @@ import java.io.File
  *
  */
 class DownloadSrevice : Service() {
-    val imag_path = externalCacheDir.absolutePath + File.separator + "background";
     override fun onBind(intent: Intent?): IBinder? {
         return null
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        log("dadad")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -32,27 +27,35 @@ class DownloadSrevice : Service() {
         val file = makeDir()
         getUrlandPic(file)
         return Service.START_STICKY
-
     }
 
     private fun makeDir(): File {
+        val imag_path = externalCacheDir.absolutePath + File.separator + "background";
+        log(externalCacheDir.absolutePath)
         val file = File(imag_path)
         if (!file.exists()) {
             file.mkdirs()
         }
-        return File(file, System.currentTimeMillis().toString() + ".jpg")
+        return File(file, "back.jpg")
     }
 
     /**
      * 获取url 并解析 储存图片
      */
     private fun getUrlandPic(file: File) {
-
         val api = NetFactory.getManager()
         var dispose: Disposable? = null
         api.getConfig().subscribeOn(Schedulers.newThread())
-                .flatMap { t -> api.getImage(t.pic_url) }
-                .map { t -> DownloadUtil.down(t.body()!!, file) }
+                .flatMap { t ->
+                    val groundString = SpUtil.getBackGroundString(this)
+                    if (groundString == t.pic_url) {
+                        return@flatMap null
+                    } else {
+                        SpUtil.putBackGroundString(this,t.pic_url)
+                        return@flatMap api.getImage(t.pic_url)
+                    }
+                }
+                .map { t -> DownloadUtil.down(t, file) }
                 .compose(RxUtil.IO2Main())
                 .subscribe(object : Observer<Unit> {
                     override fun onComplete() {
@@ -66,12 +69,10 @@ class DownloadSrevice : Service() {
                     }
 
                     override fun onNext(t: Unit) {
-
                     }
 
                     override fun onError(e: Throwable) {
                         log("出现错误:" + e.message)
-
                     }
 
                 })

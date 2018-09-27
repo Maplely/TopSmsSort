@@ -1,19 +1,20 @@
 package com.top.topsmssort.ui
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.top.topsmssort.R
-import com.top.topsmssort.model.ConfigBean
-import com.top.topsmssort.net.NetFactory
 import com.top.topsmssort.service.DownloadSrevice
-import com.top.topsmssort.utils.RxUtil
-import com.top.topsmssort.utils.log
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
+import com.top.topsmssort.utils.Constants
+import com.top.topsmssort.utils.toast
 import kotlinx.android.synthetic.main.activity_splash.*
+import java.io.File
 
 /**
  * Created by lihaitao on 2018/9/26.
@@ -23,10 +24,21 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        //开启服务
-        beginService()
-        //设置动画
-        setAnim()
+        //设置背景图
+        setBackPic()
+        //权限检查
+        checkoutPermisson()
+    }
+
+    private fun setBackPic() {
+        val path = Constants.getBackImage(this)
+        val file = File(path)
+        if (file.exists()) {
+            //文件存在
+            val drawable = BitmapFactory.decodeFile(path)
+            splash_back.setImageBitmap(drawable)
+        }
+
     }
 
     private fun beginService() {
@@ -54,32 +66,42 @@ class SplashActivity : AppCompatActivity() {
     }
 
     /**
-     * 获取url
+     * 检查权限
      */
-    private fun getUrl() {
-        val api = NetFactory.getManager()
-        var dispose: Disposable? = null
-        api.getConfig().compose(RxUtil.IO2Main())
-                .subscribe(object : Observer<ConfigBean> {
-                    override fun onComplete() {
-                        log("完成")
-                        dispose?.dispose()
-                    }
+    private fun checkoutPermisson() {
+        var no_list = mutableListOf<String>()
+        Constants.Permissions.forEach {
+            if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, it)) {
+                no_list.add(it)
+            }
+        }
+        if (no_list.size > 0) {
+            ActivityCompat.requestPermissions(this, no_list.toTypedArray(), MainActivity.permission_request)
+        } else {
+            setAnim()
+            beginService()
+        }
+    }
 
-                    override fun onSubscribe(d: Disposable) {
-                        dispose = d
-                    }
-
-                    override fun onNext(t: ConfigBean) {
-                        log(t.pic_url)
-                        //开启服务
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        log("出现错误")
-                    }
-
-                })
+    /**
+     * 权限回调
+     */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        var flag = true;
+        if (requestCode == MainActivity.permission_request) {
+            grantResults.forEach {
+                if (it != PackageManager.PERMISSION_GRANTED) {
+                    //权限没有通过
+                    toast("请在设置中开启权限,否则无法正常使用app")
+                    flag = false
+                    return@forEach
+                }
+            }
+            if (flag) {
+                beginService()
+            }
+            setAnim()
+        }
     }
 }

@@ -1,9 +1,9 @@
 package com.top.topsmssort.utils
 
+import android.util.Log
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 
 /**
  * Created by lihaitao on 2018/9/26.
@@ -12,24 +12,19 @@ import java.io.InputStream
 object DownloadUtil {
     fun down(body: ResponseBody, file: File) {
 
-        var input: InputStream? = null
+
         var fileOutputStream: FileOutputStream? = null
         try {
-            input = body.byteStream()
+            val input = body.bytes()
             fileOutputStream = FileOutputStream(file)
-
-            var count: Int = 0
-            count = input.read()
-            while (count != -1) {
-                fileOutputStream.write(count)
-            }
+            fileOutputStream.write(input)
 
         } catch (e: Exception) {
-
-        } finally {
-            if (input != null) {
-                input.close()
+            if (Constants.debuggable) {
+                Log.e("TTT", "出现错误" + e.message)
             }
+        } finally {
+
             if (fileOutputStream != null) {
                 fileOutputStream.close()
             }

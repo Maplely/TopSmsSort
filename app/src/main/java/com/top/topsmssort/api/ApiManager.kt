@@ -2,7 +2,7 @@ package com.top.topsmssort.api
 
 import com.top.topsmssort.model.ConfigBean
 import io.reactivex.Observable
-import okhttp3.Response
+import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Url
 
@@ -15,5 +15,5 @@ interface ApiManager {
     @GET("top2015/Resource/master/image_sms/config.json")
     fun getConfig():Observable<ConfigBean>
     @GET
-    fun getImage(@Url url:String):Observable<Response>
+    fun getImage(@Url url:String):Observable<ResponseBody>
 }
