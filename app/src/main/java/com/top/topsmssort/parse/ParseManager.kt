@@ -9,43 +9,70 @@ import java.util.regex.Pattern
  *
  */
 object ParseManager {
+    const val NUM = "num"
+    const val WHERE = "where"
+    const val PHONE = "phone"
     fun parseSMs(sms: PreSmsBean): SmsBean {
+        val smsBean = SmsBean()
         val time = sms.data
         val body = sms.body
-        var name: String? = null
-        var where: String? = null
-        var num: String? = null
-        var tel: String? = null
+        if(!body.contains("】")){
+            return smsBean
+        }
         val str = body.substring(1, body.indexOfFirst { it == '】' })
         when (str) {
             "菜鸟智能柜" -> {
-                name=str
-
+                smsBean.name = str
             }
             "蜂巢" -> {
-                name=str
+                smsBean.name = str
+                val dataMap = parseCaiNiao(body)
+                smsBean.num = dataMap.get(NUM)
+                smsBean.where = dataMap.get(WHERE)
+                smsBean.tel = dataMap.get(PHONE)
+                smsBean.time = time
             }
             "e栈" -> {
-                name=str
+                smsBean.name = str
             }
             "云喇叭" -> {
-                name=str
+                smsBean.name = str
             }
             "中国邮政" -> {
-                name=str
+                smsBean.name = str
             }
             else -> {
-
+                smsBean.name=null
             }
 
         }
-
-        return substring
+        return smsBean
     }
-    //1 where 2num 3tel
-    fun parseCaiNiao(input:String):ArrayList<String>{
-        input.contains("取件码",true)
-        Pattern.compile("『[0-9]+』")
+
+    /*
+    丰巢解析
+     */
+    //1 where 2num
+    fun parseCaiNiao(input: String): Map<String, String> {
+        var map = mutableMapOf<String, String>()
+        //num
+        var matcher = Pattern.compile("『\\d+』").matcher(input)
+        if (matcher.find()) {
+            val group = matcher.group()
+            val s1 = group.let {
+                it.substring(1, it.length - 1)
+            }
+            map.put(NUM, s1)
+        }
+        matcher = Pattern.compile("至(.+)丰").matcher(input)
+        if (matcher.find()) {
+            val group = matcher.group()
+            val run = group.run {
+                this.substring(1, this.length - 1)
+            }
+            map.put(WHERE, run)
+        }
+        return map
     }
 
 }

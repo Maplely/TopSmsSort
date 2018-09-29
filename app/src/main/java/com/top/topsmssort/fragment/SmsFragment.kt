@@ -3,6 +3,7 @@ package com.top.topsmssort.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,6 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_sms.*
 import kotlinx.android.synthetic.main.fragment_sms.view.*
 
 /**
@@ -29,21 +29,25 @@ class SmsFragment : Fragment() {
     lateinit var dataList: ArrayList<SmsBean>
     lateinit var mAdapter: SmsAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_sms, null)
+        val view = inflater.inflate(R.layout.fragment_sms, container,false)
         view.sms_toolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
         view.sms_float_button.setOnClickListener {
             log("开始处理短信")
+            produce()
         }
         dataList = arrayListOf()
         mAdapter = SmsAdapter(activity, dataList)
-        sms_recycler.adapter =
-                return view
+        view.sms_recycler.adapter = mAdapter
+        view.sms_recycler.layoutManager=LinearLayoutManager(activity)
+        return view
     }
 
 
     private fun produce() {
+        var dis: Disposable? = null
+        var list = mutableListOf<SmsBean>()
         Observable.create<PreSmsBean> {
             val uri = Uri.parse("content://sms/inbox")
             val cur = activity?.contentResolver!!.query(uri, null, null, null, null)
@@ -51,7 +55,6 @@ class SmsFragment : Fragment() {
             cur.moveToFirst()
             val date_index = cur.getColumnIndex("date")
             val body_index = cur.getColumnIndex("body")
-            val address_index = cur.getColumnIndex("address")
             while (cur.moveToNext()) {
                 val date = cur.getString(date_index)
                 val body = cur.getString(body_index)
@@ -61,26 +64,28 @@ class SmsFragment : Fragment() {
             cur.close()
             it.onComplete()
         }.subscribeOn(Schedulers.newThread())
-                .map(object : io.reactivex.functions.Function<PreSmsBean, SmsBean> {
-                    override fun apply(t: PreSmsBean): SmsBean {
-                       return ParseManager.parseSMs(t)
-                    }
-                })
+                .map { t -> ParseManager.parseSMs(t) }
                 .compose(RxUtil.IO2Main())
                 .subscribe(object : Observer<SmsBean> {
                     override fun onComplete() {
-
+                        refresh(list)
+                        log("完成")
                     }
 
                     override fun onSubscribe(d: Disposable) {
-
+                        dis = d
+                        log("开始")
                     }
 
                     override fun onNext(t: SmsBean) {
+                        log("2222")
+                        t.name?.let {
+                            list.add(t)
+                        }
                     }
 
                     override fun onError(e: Throwable) {
-
+                        throw e
                     }
 
                 })
@@ -89,7 +94,8 @@ class SmsFragment : Fragment() {
     /**
      * 刷新数据
      */
-    fun refresh() {
+    fun refresh(list: MutableList<SmsBean>) {
+        mAdapter.addDate(list as ArrayList<SmsBean>)
         mAdapter.notifyDataSetChanged()
     }
 }
