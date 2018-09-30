@@ -5,9 +5,9 @@ package com.top.topsmssort.model
  *
  */
 class SmsBean {
-    var name: String? = null
-    var where: String? = null
-    var num: String? = null
-    var tel: String? = null
-    var time: String? = null
+    var name: String? = ""
+    var where: String? = ""
+    var num: String? = ""
+    var tel: String? = ""
+    var time: String? = ""
 }

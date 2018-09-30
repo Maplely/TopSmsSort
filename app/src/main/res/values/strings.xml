@@ -4,4 +4,5 @@
     <string name="drawer_header_title">hello world</string>
     <string name="drawer_item">快递短信整理</string>
     <string name="drawer_about">about me</string>
+    <string name="sms_adapter_header_str">总计%d条数据</string>
 </resources>

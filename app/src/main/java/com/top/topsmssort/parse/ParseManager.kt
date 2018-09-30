@@ -2,6 +2,8 @@ package com.top.topsmssort.parse
 
 import com.top.topsmssort.model.PreSmsBean
 import com.top.topsmssort.model.SmsBean
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -12,9 +14,11 @@ object ParseManager {
     const val NUM = "num"
     const val WHERE = "where"
     const val PHONE = "phone"
+    val format="yyyy年MM月dd日-hh:mm:ss"
     fun parseSMs(sms: PreSmsBean): SmsBean {
         val smsBean = SmsBean()
-        val time = sms.data
+
+        val time = SimpleDateFormat(format).format(Date(sms.data.toLong()))
         val body = sms.body
         if(!body.contains("】")){
             return smsBean
@@ -24,12 +28,11 @@ object ParseManager {
             "菜鸟智能柜" -> {
                 smsBean.name = str
             }
-            "蜂巢" -> {
+            "丰巢" -> {
                 smsBean.name = str
                 val dataMap = parseCaiNiao(body)
                 smsBean.num = dataMap.get(NUM)
                 smsBean.where = dataMap.get(WHERE)
-                smsBean.tel = dataMap.get(PHONE)
                 smsBean.time = time
             }
             "e栈" -> {

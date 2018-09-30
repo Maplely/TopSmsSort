@@ -15,6 +15,7 @@ import com.top.topsmssort.model.SmsBean
 import com.top.topsmssort.parse.ParseManager
 import com.top.topsmssort.utils.RxUtil
 import com.top.topsmssort.utils.log
+import com.top.topsmssort.utils.toast
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -37,12 +38,17 @@ class SmsFragment : Fragment() {
             log("开始处理短信")
             produce()
         }
+        view.sms_float_up.setOnClickListener {
+            //点击回到顶部
+          view.sms_recycler.smoothScrollToPosition(0)
+        }
         dataList = arrayListOf()
         mAdapter = SmsAdapter(activity, dataList)
         view.sms_recycler.adapter = mAdapter
         view.sms_recycler.layoutManager=LinearLayoutManager(activity)
         return view
     }
+
 
 
     private fun produce() {
@@ -69,16 +75,16 @@ class SmsFragment : Fragment() {
                 .subscribe(object : Observer<SmsBean> {
                     override fun onComplete() {
                         refresh(list)
-                        log("完成")
+                        log("完成解析")
+                        toast("解析完成！")
                     }
 
                     override fun onSubscribe(d: Disposable) {
                         dis = d
-                        log("开始")
+                        log("开始解析")
                     }
 
                     override fun onNext(t: SmsBean) {
-                        log("2222")
                         t.name?.let {
                             list.add(t)
                         }

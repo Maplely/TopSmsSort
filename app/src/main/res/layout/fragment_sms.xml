@@ -27,9 +27,21 @@
         android:src="@drawable/sort"
         app:elevation="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sms_float_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="150dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/sms_fragment_up"
+        app:elevation="10dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sms_recycler"
+        android:overScrollMode="never"
+        android:scrollbars="vertical"
+        android:scrollbarSize="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
