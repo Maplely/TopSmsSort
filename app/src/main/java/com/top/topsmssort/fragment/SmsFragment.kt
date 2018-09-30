@@ -75,7 +75,6 @@ class SmsFragment : Fragment() {
                 .subscribe(object : Observer<SmsBean> {
                     override fun onComplete() {
                         refresh(list)
-                        log("完成解析")
                         toast("解析完成！")
                     }
 
