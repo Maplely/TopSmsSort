@@ -56,7 +56,7 @@ class SmsFragment : Fragment() {
         var list = mutableListOf<SmsBean>()
         Observable.create<PreSmsBean> {
             val uri = Uri.parse("content://sms/inbox")
-            val cur = activity?.contentResolver!!.query(uri, null, null, null, null)
+            val cur = activity?.contentResolver!!.query(uri, null, null, null, "date DESC")
 
             cur.moveToFirst()
             val date_index = cur.getColumnIndex("date")

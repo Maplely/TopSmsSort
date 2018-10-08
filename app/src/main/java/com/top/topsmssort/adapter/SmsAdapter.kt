@@ -10,6 +10,7 @@ import com.top.topsmssort.R
 import com.top.topsmssort.model.SmsBean
 import kotlinx.android.synthetic.main.adapter_sms.view.*
 import kotlinx.android.synthetic.main.sms_adapter_header.view.*
+import java.util.*
 
 /**
  * Created by lihaitao on 2018/9/27.
@@ -44,7 +45,7 @@ class SmsAdapter(val contet: FragmentActivity?, var dataList: ArrayList<SmsBean>
             dataList?.run {
                 if (this.size > 0) {
                     holder as SmsHolder
-                    val bean = this[position]
+                    val bean = this[position-1]
                     holder.where_tv.text = "位置:" + bean.where
                     //TODO(拨打电话)
                     holder.tel_tv.text = "电话:" + bean.tel
