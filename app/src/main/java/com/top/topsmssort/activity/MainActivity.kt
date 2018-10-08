@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
     fun closDrawer(){
         sms_drawer.closeDrawers()
     }
+    fun isDrawerClosed():Boolean{
+        return  sms_drawer.isDrawerOpen(Gravity.LEFT)
+    }
 
     fun switch(type: String) {
         val manager = supportFragmentManager

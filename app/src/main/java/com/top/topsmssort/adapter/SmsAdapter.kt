@@ -56,7 +56,6 @@ class SmsAdapter(val contet: FragmentActivity?, var dataList: ArrayList<SmsBean>
             }
         }
     }
-
     override fun getItemViewType(position: Int): Int {
         return if (position == 0) {
             TYPE_HEADER

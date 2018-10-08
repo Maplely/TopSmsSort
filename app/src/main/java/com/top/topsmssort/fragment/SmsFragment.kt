@@ -30,7 +30,7 @@ class SmsFragment : Fragment() {
     lateinit var dataList: ArrayList<SmsBean>
     lateinit var mAdapter: SmsAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_sms, container,false)
+        val view = inflater.inflate(R.layout.fragment_sms, container, false)
         view.sms_toolbar.setNavigationOnClickListener {
             (activity as MainActivity).openDrawer()
         }
@@ -40,15 +40,14 @@ class SmsFragment : Fragment() {
         }
         view.sms_float_up.setOnClickListener {
             //点击回到顶部
-          view.sms_recycler.smoothScrollToPosition(0)
+            view.sms_recycler.smoothScrollToPosition(0)
         }
         dataList = arrayListOf()
         mAdapter = SmsAdapter(activity, dataList)
         view.sms_recycler.adapter = mAdapter
-        view.sms_recycler.layoutManager=LinearLayoutManager(activity)
+        view.sms_recycler.layoutManager = LinearLayoutManager(activity)
         return view
     }
-
 
 
     private fun produce() {
@@ -84,7 +83,7 @@ class SmsFragment : Fragment() {
                     }
 
                     override fun onNext(t: SmsBean) {
-                        t.name?.let {
+                        t.num?.let {
                             list.add(t)
                         }
                     }
